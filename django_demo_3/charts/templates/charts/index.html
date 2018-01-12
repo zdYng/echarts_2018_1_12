@@ -1,0 +1,223 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MySQL读取并显示到网页上</title>
+{#    <script type="text/javascript" src="http://echarts.baidu.com/dist/echarts.js"></script>#}
+    <script type="text/javascript" src="/static/echarts.min.js"></script>
+
+{#    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>#}
+    <script type="text/javascript" src="/static/jquery.min.js"></script>
+
+<style type="text/css">
+     body{
+        background:#e3e4e8;
+     }
+     .sm-box{
+         width:90%;
+         heigh:400px;
+         margin-top: 15px;
+         margin-left: 5%;
+         position: relative;
+         background: #BCD7DC;
+
+     }
+
+     .box{
+         width:90%;
+         height:400px;
+         margin-left: 5%;
+         position:relative;
+         background-color:silver
+
+     }
+     .tab{
+         position: relative;
+         width: 100%;
+         height: 100%;
+         text-align: center;
+         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+         font-size: 20pt;
+         color: #FFFFFF;
+     }
+     .tab_style{
+         text-align: center;
+         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+         font-size: 35px;
+         color: #000000;
+     }
+
+    .con{
+        position: relative;
+        width: 90%;
+        height: 1200px;
+        margin-top: 15px;
+        margin-left: 5%;
+        background: #BCD7DC;
+    }
+    .line{
+        position: relative;
+        width: 100%;
+        height: 50%;
+    }
+    td{
+        font-size: 35px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        line-height: 40px
+    }
+    th{
+        line-height: 40px
+    }
+    .picture{
+        position: relative;
+        width: 30%;
+        height: 100%;
+        margin-left: 40px;
+        background: #00b0ff;
+        display: inline-block;
+    }
+</style>
+<script src="//api.apowersoft.cn/screen-recorder?lang=zh" defer></script>
+</head>
+<body>
+<div class="box" >
+
+
+
+    <table class="tab" border="10">
+        <tr bgcolor=#498BAC>
+            <th class="tab_style">预测参数</th>
+            <th class="tab_style">时间</th>
+            <th class="tab_style">预测值</th>
+            <th class="tab_style">实际值</th>
+            <th class="tab_style">误差率</th>
+        </tr>
+        <tr bgcolor=#87BCD6>
+            <td>发电机有功功率（MW）</td><!--E91GE01AP_AV -->
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr bgcolor=#76C1E7>
+            <td>3号炉主给水温度（℃）</td><!--B01TE01A_AV -->
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr bgcolor=#87BCD6>
+            <td>主汽压力（Mpa）</td><!--T1AMTP_AV -->
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr bgcolor=#76C1E7>
+            <td> 高温再热器出口管屏壁温最大值（℃）</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr bgcolor=#87BCD6>
+            <td>低温再热器出口管屏壁温最大值（℃）</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    </table>
+</div>
+     <!--<div class="sm-box" >-->
+        <!--<div class="sm-line">-->
+            <!--折线图一-->
+            <!--<form action="/charts_data/" method="post">-->
+                <!--{% csrf_token %}-->
+                <!--<input type="text" id="hour" name="hour" >小时<br>-->
+                <!--<input type="text" id="minute" name="minute" >分钟<br>-->
+                <!--<input type="text" id="second" name="second">秒<br>-->
+                <!--<p>预测<span id="result"></span></p>-->
+                <!--<button type="button" id="sum">刷新</button>-->
+            <!--</form>-->
+        <!--</div>-->
+    <!--</div>-->
+
+
+    <div class="con" id="zhexian_block">
+
+        <div class="line">
+            <div class="picture" id="main"></div>
+            <div class="picture" id="main_2"></div>
+            <div class="picture" id="main_3"></div>
+        </div>
+         <div class="line">
+            <div class="picture" id="main_4"></div>
+            <div class="picture" id="main_5"></div>
+{#            <div class="picture" id="main_6"></div>#}
+        </div>
+    </div>
+    <div class="con" id="square_block">
+        <div class="line">
+            <div class="picture" id ="mianji"></div>
+            <div class="picture" id ="mianji_2"></div>
+            <div class="picture" id ="mianji_3"></div>
+        </div>
+         <div class="line">
+             <div class="picture" id ="mianji_4"></div>
+             <div class="picture" id ="mianji_5"></div>
+{#             <div class="picture" id ="mianji_6"></div>#}
+        </div>
+    </div>
+    <div class="con" id="example">
+        <div class="line">
+            <div  class="picture" id="scatter" style="width:50%;"></div>
+            <div class="picture" id="leida"  ></div>
+        </div>
+        <div class="line">
+            <div class="picture" id="guanxi" style="width:50%;height: 100%;" ></div>
+        </div>
+    </div>
+
+
+
+<form>
+    {% csrf_token %}
+    {{ form }}
+    <div class="start-screen-recording"><div><div class="rec-dot"></div><span>开始录制</span></div></div>
+</form>
+</div>
+
+</body>
+{#table#}
+{#<script type="text/javascript" src="/static/table_data/table_data_6.js"></script>#}
+{#<script type="text/javascript" src="/static/table_data/table_data_5.js"></script>#}
+{#<script type="text/javascript" src="/static/table_data/table_data_4.js"></script>#}
+{#<script type="text/javascript" src="/static/table_data/table_data_3.js"></script>#}
+{#<script type="text/javascript" src="/static/table_data/table_data_2.js"></script>#}
+{#<script type="text/javascript" src="/static/table_data/table_data.js"></script>#}
+{#折线图#}
+{#<script type="text/javascript" src="/static/line_chart/chart_1.js"></script>#}
+{#<script type="text/javascript" src="/static/line_chart/chart_2.js"></script>#}
+{#<script type="text/javascript" src="/static/line_chart/chart_3.js"></script>#}
+{#<script type="text/javascript" src="/static/line_chart/chart_4.js"></script>#}
+{#<script type="text/javascript" src="/static/line_chart/chart_5.js"></script>#}
+{#<script type="text/javascript" src="/static/line_chart/chart_6.js"></script>#}
+{#其他#}
+{#<script type="text/javascript" src="/static/scatter.js"></script>#}
+{#<script type="text/javascript" src="/static/leida.js"></script>#}
+{#<script type="text/javascript" src="/static/guanxi.js"></script>#}
+{#mianji#}
+{#<script type="text/javascript" src="/static/mianji_chart/mianji.js"></script>#}
+{#<script type="text/javascript" src="/static/mianji_chart/mianji_2.js"></script>#}
+{#<script type="text/javascript" src="/static/mianji_chart/mianji_3.js"></script>#}
+{#<script type="text/javascript" src="/static/mianji_chart/mianji_4.js"></script>#}
+{#<script type="text/javascript" src="/static/mianji_chart/mianji_5.js"></script>#}
+
+<script type="text/javascript" src="/static/all.js"></script>
+{#<script type="text/javascript" src="/static/mianji_chart/mianji_6.js"></script>#}
+</html>
+{% endblock %}

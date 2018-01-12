@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django管理</title>
+    <script type="text/javascript" src="/static/echarts.min.js"></script>
+	<link href="/static/admin/css/base.css">
+    <script type="text/javascript" src="/static/jquery.min.js"></script>
+
+<style type="text/css">
+    *{padding: 0;margin: 0}
+     body{
+        background:#f8f8f8;
+         font-family: "Helvetica Neue",Microsoft YaHei, Helvetica, Arial, sans-serif;
+
+     }
+     p{
+         margin: 0;
+         padding: 0;
+     }
+     .header{
+         height: 7%;
+         background: #3c8dbc;
+         color: #ffffff;
+         margin-bottom: 5%;
+     }
+     .nav{
+         font-size: 4%;
+         line-height: 7%;
+         width: 95%;
+         margin: 0 auto;
+     }
+     .sm-box{
+         width:90%;
+         heigh:400px;
+         margin-top: 15px;
+         margin-left: 5%;
+         position: relative;
+         background: #BCD7DC;
+
+     }
+
+     .box{
+         width:90%;
+         height:400px;
+         margin-left: 5%;
+         position:relative;
+         background-color:silver
+
+     }
+     /*.tab{*/
+         /*position: relative;*/
+         /*width: 100%;*/
+         /*height: 100%;*/
+         /*text-align: center;*/
+         /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+         /*font-size: 20pt;*/
+         /*color: #FFFFFF;*/
+     /*}*/
+     /*.tab_style{*/
+         /*text-align: center;*/
+         /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+         /*font-size: 35px;*/
+         /*color: #000000;*/
+     /*}*/
+     .con:first-child{
+         margin-top: 24px;
+     }
+    .con{
+        position: relative;
+        width: 90%;
+        clear: both;
+        margin-bottom: 24px;
+        margin-left: 5%;
+        background: #fff;
+        /*border: #e4e4e6;*/
+        box-sizing: border-box;
+    }
+    .line{
+        position: relative;
+        width: 100%;
+        height: 50%;
+    }
+    /**/
+    .picture{
+        position: relative;
+        width: 30%;
+        height: 100%;
+        margin-left: 40px;
+        background: #00b0ff;
+        display: inline-block;
+    }
+    /*table样式激进*/
+     .bt-table{width: 100%;border-collapse: collapse;}
+     .bt-table tr{border: 1px solid #e4e4e6}
+     .bt-table td{font-size: 16px;padding: 10px;padding-left: 20px;  }
+     .bt-table th{
+         text-align: left;
+         padding-left: 20px;
+         height: 48px;line-height: 48px;
+         background: #f9fafc;
+         font-size: 18px;
+         font-weight: normal}
+     .bt-table tr:nth-child(even){background: #fff}
+     .bt-table tr:nth-child(odd){background: #f8f9fe}
+     .no-border{border:0}
+     .border{border: 1px solid #e4e4e6}
+     .con-r{width:100%;clear: both;}
+        .con-cell{
+            width: 49%;
+            float: left;
+            height: 446px;
+            background: #ffffff;
+        }
+     .con-cell .con-cell-map{
+         height: 400px;
+         width: 100%;
+     }
+     .con-r .con-cell:last-child{float: right}
+     .con-cell-title{
+         background: #f9fafc;
+         height: 26px;
+         padding: 10px 10px;
+         line-height: 26px;
+         border-bottom: 1px solid #e4e4e6
+     }
+</style>
+</head>
+<body>
+    <div class="con no-border" style="display: none;">
+        <table class="bt-table">
+            <tr >
+                <th class="tab_style">预测参数</th>
+                <th class="tab_style">时间</th>
+                <th class="tab_style">预测值</th>
+                <th class="tab_style">实际值</th>
+                <th class="tab_style">误差率</th>
+            </tr>
+            <tr >
+                <td>发电机有功功率（MW）</td><!--E91GE01AP_AV -->
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr >
+                <td>3号炉主给水温度（℃）</td><!--B01TE01A_AV -->
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr >
+                <td>主汽压力（Mpa）</td><!--T1AMTP_AV -->
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr >
+                <td> 高温再热器出口管屏壁温最大值（℃）</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr >
+                <td>低温再热器出口管屏壁温最大值（℃）</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="con border" id="zhexian_block">
+
+        <div class="line">
+            <div style="width:80%;height:950px; margin: 0 auto;padding-top: 10px">
+                <div id="main" style="width: 100%;height:100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="con">
+        <div class="con-r">
+            <div class="con-cell border">
+               <p class="con-cell-title">
+                   高温再热器出口管屏壁温最大值
+               </p>
+                <div id="main_4" class="con-cell-map">
+
+                </div>
+            </div>
+            <div class="con-cell border">
+              <p class="con-cell-title">
+                  低温再热器出口管屏壁温最大值</p>
+                <div id="main_5" class="con-cell-map">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<!--<script>-->
+    <!--var URL_BASE = "/hsdc";-->
+<!--</script>-->
+<script type="text/javascript" src="/static/chart.js"></script>
+</html>
